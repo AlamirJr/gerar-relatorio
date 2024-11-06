@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Relatórios</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #4e73df;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #d1d3e2;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: #f8f9fc;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #4e73df;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        /* Botão azul */
+        #generate-report-button {
+            background-color: #4e73df;
+        }
+
+        #generate-report-button:hover {
+            background-color: #2e59d9;
+        }
+
+        /* Botão verde */
+        #generate-pdf-button {
+            background-color: #28a745;
+        }
+
+        #generate-pdf-button:hover {
+            background-color: #218838;
+        }
+
+        #report-output {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 30px;
+        }
+
+        #report-output h2 {
+            color: #2e59d9;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        #report-output p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .placeholder {
+            color: #b1b3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador de Relatórios</h1>
+
+        <label for="report-title">Título do Relatório:</label>
+        <input type="text" id="report-title" placeholder="Ex: Relatório de Frequência">
+
+        <label for="report-data">Dados Principais:</label>
+        <textarea id="report-data" rows="5" placeholder="Ex: Frequência: 90%&#10;Nota: 8.5"></textarea>
+
+        <label for="report-notes">Observações:</label>
+        <textarea id="report-notes" rows="3" placeholder="Ex: Aluno teve ótima participação."></textarea>
+
+        <button id="generate-report-button" onclick="generateReport()">Gerar Relatório</button>
+        <button id="generate-pdf-button" onclick="generatePDF()">Gerar Relatório em PDF</button>
+
+        <!-- Campo para mostrar o relatório -->
+        <div id="report-output"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function generateReport() {
+            const title = document.getElementById('report-title').value;
+            const data = document.getElementById('report-data').value;
+            const notes = document.getElementById('report-notes').value;
+
+            const reportHTML = `
+                <h2>${title}</h2>
+                <p><strong>Dados Principais:</strong></p>
+                <p>${data.replace(/\n/g, '<br>')}</p>
+                <p><strong>Observações:</strong></p>
+                <p>${notes.replace(/\n/g, '<br>')}</p>
+            `;
+            
+            // Exibe o relatório na tela
+            document.getElementById('report-output').innerHTML = reportHTML;
+        }
+
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const title = document.getElementById('report-title').value;
+            const data = document.getElementById('report-data').value;
+            const notes = document.getElementById('report-notes').value;
+
+            doc.setFontSize(16);
+            doc.text(title, 20, 20);
+            
+            doc.setFontSize(12);
+            doc.text("Dados Principais:", 20, 40);
+            doc.text(data, 20, 50);
+            
+            doc.text("Observações:", 20, 70);
+            doc.text(notes, 20, 80);
+
+            doc.save(`${title}.pdf`);
+        }
+    </script>
+</body>
+</html>
